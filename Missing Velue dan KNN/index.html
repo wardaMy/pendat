@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Missing Velue dan KNN - My Docs</title>
+        <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="..">My Docs</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="../Data Diri/">Tugas Penambangan Data</a>
+                            </li>
+                            <li class="active">
+                                <a href="./">Missing Velue dan KNN</a>
+                            </li>
+                            <li >
+                                <a href="../Statistika Deskriptif/">Statistika Deskriptif</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li >
+                                <a rel="next" href="../Data Diri/">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li >
+                                <a rel="prev" href="../Statistika Deskriptif/">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#missing-values">Missing Values</a></li>
+        <li class="main "><a href="#metode-untuk-mengatasi-missing-values">Metode untuk mengatasi Missing Values</a></li>
+            <li><a href="#1-prosedur-berbasis-unit-yang-lengkap-completely-recorded-units">1. Prosedur berbasis unit yang lengkap (completely recorded units)</a></li>
+            <li><a href="#2-prosedur-berbasis-imputasi">2. Prosedur berbasis imputasi</a></li>
+            <li><a href="#3-prosedur-weigthing">3. prosedur weigthing</a></li>
+            <li><a href="#4-prosedur-berbasis-model">4. Prosedur berbasis Model</a></li>
+            <li><a href="#5-metode-k-nearest-neighbor-knn">5. metode K-Nearest Neighbor (KNN)</a></li>
+            <li><a href="#sumber-data-yang-saya-ambil">Sumber data yang saya ambil:</a></li>
+            <li><a href="#httparchiveicsuciedumldatasetsskillcraft1mastertabledataset">http://archive.ics.uci.edu/ml/datasets/skillcraft1+master+table+dataset</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h2 id="missing-values">Missing Values</h2>
+<p>Missing Values atau data hilang yaitu informasi yang tidak tersedia untuk sebuah objek(kasus). Missing Values terjadi karena informasi tidak diberikan atau hilang atau bahkan tidak ada sama sekali.</p>
+<h2 id="metode-untuk-mengatasi-missing-values">Metode untuk mengatasi Missing Values</h2>
+<h3 id="1-prosedur-berbasis-unit-yang-lengkap-completely-recorded-units">1. Prosedur berbasis unit yang lengkap (completely recorded units)</h3>
+<p>Pada prosedur ini analisis hanya dilakukan terhadap unit (sebanyak n1 <em>case</em>, baris pada matriks data n x m) dimana seluruh m variabel memiliki data yang lengkap sedangkan sebanyak n2 case yang ada missing value pada variabelnya diabaikan atau dikeluarkan dari analisis</p>
+<p>metode ini cukup bagus jika jumlah missing values tidak terlalu besar, tapi akan menjad tidak efisien jika presentasi missing data (n2/n).100 meningkat atau missing value mengelompok.</p>
+<h3 id="2-prosedur-berbasis-imputasi">2. Prosedur berbasis imputasi</h3>
+<p>imputasi adalah alternatif yang umum dan fleksibel. dengan metode ini missing value diisi dengan menduga langsung atau juga dengan menduga berbasis korelasi. terdapat bebrapa macam pendekatan untuk imputasi ini, antara lain :</p>
+<p>a. Hot deck imputation, dimana dari unit yang tercatat akan disubstitusikan terhadap missing values</p>
+<p>b . cold deck imputation, dimana missing value diganti oleh suatu nilai yang konstan</p>
+<p>c. mean imputation, nilai yang hilang diganti dengan rata-rata(mean) dari kelompok satu unit yang terkait</p>
+<p>d. regression (corelation) imputation, missing value dari suatu variabel diestimasi menggunakan nilai penduga dari regresi atau korelasi variabel tersebut pada variabel lainnya</p>
+<h3 id="3-prosedur-weigthing">3. prosedur weigthing</h3>
+<p>weighting yaitu dimana estimasi biasanya didasarkan pada design weight, yaitu proporsional secara terbalik terhadap peluang pemilihan sampelnya</p>
+<h3 id="4-prosedur-berbasis-model">4. Prosedur berbasis Model</h3>
+<p>prosedur ini dibentuk dengan menentukan suatu model sebagian data hilang (missing values) lalu melakukan inferensi berbasis pada likelihood dibawah model tersebut. parameter diestimasi dengan suatu prosedur iteratif maximum likelihood dimaulai dengan unit atau cases yang lengkap</p>
+<h3 id="5-metode-k-nearest-neighbor-knn">5. metode K-Nearest Neighbor (KNN)</h3>
+<p>K-Nearest Neighbor atau biasa disingkat KNN adalah suatu algoritma yang digunakan untuk mengklasifikasi objek berdasar dari data pembelajaran yang jaraknya paling dekat dengan objek tersebut. Contoh</p>
+<table>
+<thead>
+<tr>
+<th>3365</th>
+<th align="left">10050</th>
+<th align="left">8</th>
+<th align="left">?</th>
+<th align="left">?</th>
+<th align="left">?</th>
+<th align="left">211.9188</th>
+<th align="left">0.019817</th>
+<th align="left">0.000633</th>
+<th align="left">4</th>
+<th align="left">0.000201</th>
+<th align="left">0.000201</th>
+<th align="left">0.003912</th>
+<th align="left">31.8222</th>
+<th align="left">54.5588</th>
+<th align="left">5.0294</th>
+<th align="left">14</th>
+<th align="left">0.001409</th>
+<th align="left">3</th>
+<th align="left">0.000000</th>
+<th align="left">0.000000</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3366</td>
+<td align="left">10051</td>
+<td align="left">8</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">269.8998</td>
+<td align="left">0.024645</td>
+<td align="left">0.000642</td>
+<td align="left">10</td>
+<td align="left">0.000415</td>
+<td align="left">0.000491</td>
+<td align="left">0.004015</td>
+<td align="left">25.6352</td>
+<td align="left">43.3856</td>
+<td align="left">6.4922</td>
+<td align="left">21</td>
+<td align="left">0.000478</td>
+<td align="left">6</td>
+<td align="left">0.000000</td>
+<td align="left">0.000579</td>
+</tr>
+<tr>
+<td>3367</td>
+<td align="left">10052</td>
+<td align="left">8</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">190.2396</td>
+<td align="left">0.008720</td>
+<td align="left">0.000879</td>
+<td align="left">10</td>
+<td align="left">0.000171</td>
+<td align="left">0.000342</td>
+<td align="left">0.004971</td>
+<td align="left">17.9901</td>
+<td align="left">35.9509</td>
+<td align="left">5.5872</td>
+<td align="left">21</td>
+<td align="left">0.000904</td>
+<td align="left">5</td>
+<td align="left">0.000000</td>
+<td align="left">0.000000</td>
+</tr>
+<tr>
+<td>3368</td>
+<td align="left">10055</td>
+<td align="left">8</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">212.4972</td>
+<td align="left">0.014917</td>
+<td align="left">0.000767</td>
+<td align="left">10</td>
+<td align="left">0.000599</td>
+<td align="left">0.000273</td>
+<td align="left">0.005648</td>
+<td align="left">21.6687</td>
+<td align="left">41.2231</td>
+<td align="left">4.4680</td>
+<td align="left">28</td>
+<td align="left">0.001119</td>
+<td align="left">9</td>
+<td align="left">0.000035</td>
+<td align="left">0.000062</td>
+</tr>
+<tr>
+<td>3369</td>
+<td align="left">10059</td>
+<td align="left">8</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">219.3894</td>
+<td align="left">0.005926</td>
+<td align="left">0.000741</td>
+<td align="left">6</td>
+<td align="left">0.000440</td>
+<td align="left">0.000709</td>
+<td align="left">0.005185</td>
+<td align="left">17.0456</td>
+<td align="left">30.5342</td>
+<td align="left">6.6749</td>
+<td align="left">35</td>
+<td align="left">0.002072</td>
+<td align="left">9</td>
+<td align="left">0.000225</td>
+<td align="left">0.000064</td>
+</tr>
+<tr>
+<td>3370</td>
+<td align="left">10060</td>
+<td align="left">8</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">230.6694</td>
+<td align="left">0.010383</td>
+<td align="left">0.001242</td>
+<td align="left">10</td>
+<td align="left">0.000375</td>
+<td align="left">0.003328</td>
+<td align="left">0.006375</td>
+<td align="left">13.5028</td>
+<td align="left">31.4044</td>
+<td align="left">5.0533</td>
+<td align="left">32</td>
+<td align="left">0.001512</td>
+<td align="left">6</td>
+<td align="left">0.000035</td>
+<td align="left">0.000047</td>
+</tr>
+<tr>
+<td>3371</td>
+<td align="left">10061</td>
+<td align="left">8</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">284.2296</td>
+<td align="left">0.016069</td>
+<td align="left">0.000711</td>
+<td align="left">9</td>
+<td align="left">0.000355</td>
+<td align="left">0.000548</td>
+<td align="left">0.006680</td>
+<td align="left">9.4756</td>
+<td align="left">29.6851</td>
+<td align="left">5.3326</td>
+<td align="left">25</td>
+<td align="left">0.002459</td>
+<td align="left">7</td>
+<td align="left">0.000000</td>
+<td align="left">0.000000</td>
+</tr>
+<tr>
+<td>3372</td>
+<td align="left">10062</td>
+<td align="left">8</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">355.3518</td>
+<td align="left">0.037526</td>
+<td align="left">0.000600</td>
+<td align="left">7</td>
+<td align="left">0.001242</td>
+<td align="left">0.000514</td>
+<td align="left">0.004541</td>
+<td align="left">9.2871</td>
+<td align="left">41.9497</td>
+<td align="left">6.5063</td>
+<td align="left">22</td>
+<td align="left">0.001228</td>
+<td align="left">8</td>
+<td align="left">0.000000</td>
+<td align="left">0.000614</td>
+</tr>
+<tr>
+<td>3373</td>
+<td align="left">10063</td>
+<td align="left">8</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">364.8504</td>
+<td align="left">0.042576</td>
+<td align="left">0.000996</td>
+<td align="left">8</td>
+<td align="left">0.000176</td>
+<td align="left">0.000146</td>
+<td align="left">0.004687</td>
+<td align="left">19.9499</td>
+<td align="left">41.1417</td>
+<td align="left">5.6167</td>
+<td align="left">18</td>
+<td align="left">0.000674</td>
+<td align="left">7</td>
+<td align="left">0.000000</td>
+<td align="left">0.000000</td>
+</tr>
+<tr>
+<td>3374</td>
+<td align="left">10064</td>
+<td align="left">8</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">256.5888</td>
+<td align="left">0.019592</td>
+<td align="left">0.000580</td>
+<td align="left">8</td>
+<td align="left">0.000416</td>
+<td align="left">0.000357</td>
+<td align="left">0.005812</td>
+<td align="left">17.0462</td>
+<td align="left">34.3734</td>
+<td align="left">5.0563</td>
+<td align="left">19</td>
+<td align="left">0.001308</td>
+<td align="left">7</td>
+<td align="left">0.000000</td>
+<td align="left">0.000000</td>
+</tr>
+<tr>
+<td>3375</td>
+<td align="left">10065</td>
+<td align="left">8</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">248.4012</td>
+<td align="left">0.016018</td>
+<td align="left">0.000874</td>
+<td align="left">9</td>
+<td align="left">0.000388</td>
+<td align="left">0.000372</td>
+<td align="left">0.005987</td>
+<td align="left">16.3144</td>
+<td align="left">30.2486</td>
+<td align="left">5.0973</td>
+<td align="left">21</td>
+<td align="left">0.001197</td>
+<td align="left">6</td>
+<td align="left">0.000000</td>
+<td align="left">0.000000</td>
+</tr>
+<tr>
+<td>3376</td>
+<td align="left">10066</td>
+<td align="left">8</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">251.2284</td>
+<td align="left">0.022910</td>
+<td align="left">0.000946</td>
+<td align="left">5</td>
+<td align="left">0.001097</td>
+<td align="left">0.001173</td>
+<td align="left">0.005411</td>
+<td align="left">13.7404</td>
+<td align="left">35.7203</td>
+<td align="left">4.5524</td>
+<td align="left">22</td>
+<td align="left">0.000738</td>
+<td align="left">5</td>
+<td align="left">0.000000</td>
+<td align="left">0.000662</td>
+</tr>
+<tr>
+<td>3377</td>
+<td align="left">10067</td>
+<td align="left">8</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">318.3000</td>
+<td align="left">0.034851</td>
+<td align="left">0.000933</td>
+<td align="left">7</td>
+<td align="left">0.000187</td>
+<td align="left">0.000023</td>
+<td align="left">0.005225</td>
+<td align="left">26.0987</td>
+<td align="left">32.4464</td>
+<td align="left">4.8705</td>
+<td align="left">13</td>
+<td align="left">0.000933</td>
+<td align="left">4</td>
+<td align="left">0.000000</td>
+<td align="left">0.000233</td>
+</tr>
+<tr>
+<td>3378</td>
+<td align="left">10068</td>
+<td align="left">8</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">288.9198</td>
+<td align="left">0.029322</td>
+<td align="left">0.001569</td>
+<td align="left">6</td>
+<td align="left">0.000118</td>
+<td align="left">0.000219</td>
+<td align="left">0.005213</td>
+<td align="left">23.2857</td>
+<td align="left">32.8026</td>
+<td align="left">4.7540</td>
+<td align="left">24</td>
+<td align="left">0.001130</td>
+<td align="left">5</td>
+<td align="left">0.000000</td>
+<td align="left">0.000000</td>
+</tr>
+<tr>
+<td>3379</td>
+<td align="left">10069</td>
+<td align="left">8</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">313.9080</td>
+<td align="left">0.019537</td>
+<td align="left">0.001214</td>
+<td align="left">4</td>
+<td align="left">0.000318</td>
+<td align="left">0.000607</td>
+<td align="left">0.005879</td>
+<td align="left">8.1642</td>
+<td align="left">26.0918</td>
+<td align="left">6.7885</td>
+<td align="left">26</td>
+<td align="left">0.001321</td>
+<td align="left">8</td>
+<td align="left">0.000106</td>
+<td align="left">0.000443</td>
+</tr>
+<tr>
+<td>3380</td>
+<td align="left">10072</td>
+<td align="left">8</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">243.7134</td>
+<td align="left">0.017195</td>
+<td align="left">0.000711</td>
+<td align="left">6</td>
+<td align="left">0.000666</td>
+<td align="left">0.000426</td>
+<td align="left">0.005594</td>
+<td align="left">21.8795</td>
+<td align="left">30.5722</td>
+<td align="left">5.1136</td>
+<td align="left">25</td>
+<td align="left">0.000576</td>
+<td align="left">8</td>
+<td align="left">0.000000</td>
+<td align="left">0.000000</td>
+</tr>
+<tr>
+<td>3381</td>
+<td align="left">10073</td>
+<td align="left">8</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">312.9804</td>
+<td align="left">0.026327</td>
+<td align="left">0.000266</td>
+<td align="left">6</td>
+<td align="left">0.000000</td>
+<td align="left">0.000207</td>
+<td align="left">0.005053</td>
+<td align="left">14.6118</td>
+<td align="left">30.7836</td>
+<td align="left">6.1930</td>
+<td align="left">10</td>
+<td align="left">0.001802</td>
+<td align="left">4</td>
+<td align="left">0.000000</td>
+<td align="left">0.000030</td>
+</tr>
+<tr>
+<td>3382</td>
+<td align="left">10074</td>
+<td align="left">8</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">313.5762</td>
+<td align="left">0.030550</td>
+<td align="left">0.000560</td>
+<td align="left">5</td>
+<td align="left">0.000000</td>
+<td align="left">0.000206</td>
+<td align="left">0.004390</td>
+<td align="left">19.5405</td>
+<td align="left">35.4094</td>
+<td align="left">6.4228</td>
+<td align="left">12</td>
+<td align="left">0.001296</td>
+<td align="left">3</td>
+<td align="left">0.000000</td>
+<td align="left">0.000059</td>
+</tr>
+<tr>
+<td>3383</td>
+<td align="left">10075</td>
+<td align="left">8</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">274.6194</td>
+<td align="left">0.022497</td>
+<td align="left">0.000707</td>
+<td align="left">6</td>
+<td align="left">0.000163</td>
+<td align="left">0.000082</td>
+<td align="left">0.004053</td>
+<td align="left">20.6757</td>
+<td align="left">32.7785</td>
+<td align="left">6.9262</td>
+<td align="left">15</td>
+<td align="left">0.000626</td>
+<td align="left">3</td>
+<td align="left">0.000000</td>
+<td align="left">0.000000</td>
+</tr>
+<tr>
+<td>3384</td>
+<td align="left">10076</td>
+<td align="left">8</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">225.0678</td>
+<td align="left">0.014339</td>
+<td align="left">0.001627</td>
+<td align="left">7</td>
+<td align="left">0.000291</td>
+<td align="left">0.000911</td>
+<td align="left">0.005281</td>
+<td align="left">16.3502</td>
+<td align="left">33.2874</td>
+<td align="left">5.4713</td>
+<td align="left">26</td>
+<td align="left">0.000898</td>
+<td align="left">8</td>
+<td align="left">0.000000</td>
+<td align="left">0.000959</td>
+</tr>
+<tr>
+<td>3385</td>
+<td align="left">10079</td>
+<td align="left">8</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">254.2188</td>
+<td align="left">0.016608</td>
+<td align="left">0.000788</td>
+<td align="left">6</td>
+<td align="left">0.000926</td>
+<td align="left">0.000330</td>
+<td align="left">0.005408</td>
+<td align="left">14.9191</td>
+<td align="left">35.9921</td>
+<td align="left">5.7205</td>
+<td align="left">28</td>
+<td align="left">0.001128</td>
+<td align="left">6</td>
+<td align="left">0.000000</td>
+<td align="left">0.000000</td>
+</tr>
+<tr>
+<td>3386</td>
+<td align="left">10081</td>
+<td align="left">8</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">339.1524</td>
+<td align="left">0.033058</td>
+<td align="left">0.001017</td>
+<td align="left">10</td>
+<td align="left">0.000477</td>
+<td align="left">0.000509</td>
+<td align="left">0.004609</td>
+<td align="left">21.6389</td>
+<td align="left">37.1862</td>
+<td align="left">6.7103</td>
+<td align="left">16</td>
+<td align="left">0.001049</td>
+<td align="left">3</td>
+<td align="left">0.000000</td>
+<td align="left">0.000000</td>
+</tr>
+<tr>
+<td>3387</td>
+<td align="left">10082</td>
+<td align="left">8</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">310.0416</td>
+<td align="left">0.026873</td>
+<td align="left">0.001278</td>
+<td align="left">10</td>
+<td align="left">0.000319</td>
+<td align="left">0.000479</td>
+<td align="left">0.005517</td>
+<td align="left">16.5446</td>
+<td align="left">33.8174</td>
+<td align="left">5.7350</td>
+<td align="left">22</td>
+<td align="left">0.000922</td>
+<td align="left">8</td>
+<td align="left">0.000000</td>
+<td align="left">0.000000</td>
+</tr>
+<tr>
+<td>3388</td>
+<td align="left">10083</td>
+<td align="left">8</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">288.7608</td>
+<td align="left">0.024022</td>
+<td align="left">0.000628</td>
+<td align="left">6</td>
+<td align="left">0.000350</td>
+<td align="left">0.001051</td>
+<td align="left">0.005580</td>
+<td align="left">19.0108</td>
+<td align="left">30.0866</td>
+<td align="left">5.3831</td>
+<td align="left">30</td>
+<td align="left">0.000761</td>
+<td align="left">5</td>
+<td align="left">0.000000</td>
+<td align="left">0.000652</td>
+</tr>
+<tr>
+<td>3389</td>
+<td align="left">10084</td>
+<td align="left">8</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">151.4046</td>
+<td align="left">0.009732</td>
+<td align="left">0.000949</td>
+<td align="left">6</td>
+<td align="left">0.000028</td>
+<td align="left">0.000156</td>
+<td align="left">0.004363</td>
+<td align="left">27.4658</td>
+<td align="left">43.8052</td>
+<td align="left">4.3312</td>
+<td align="left">23</td>
+<td align="left">0.000949</td>
+<td align="left">6</td>
+<td align="left">0.000000</td>
+<td align="left">0.000099</td>
+</tr>
+<tr>
+<td>3390</td>
+<td align="left">10089</td>
+<td align="left">8</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">259.6296</td>
+<td align="left">0.020425</td>
+<td align="left">0.000743</td>
+<td align="left">9</td>
+<td align="left">0.000621</td>
+<td align="left">0.000146</td>
+<td align="left">0.004555</td>
+<td align="left">18.6059</td>
+<td align="left">42.8342</td>
+<td align="left">6.2754</td>
+<td align="left">46</td>
+<td align="left">0.000877</td>
+<td align="left">5</td>
+<td align="left">0.000000</td>
+<td align="left">0.000000</td>
+</tr>
+<tr>
+<td>3391</td>
+<td align="left">10090</td>
+<td align="left">8</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">314.6700</td>
+<td align="left">0.028043</td>
+<td align="left">0.001157</td>
+<td align="left">10</td>
+<td align="left">0.000246</td>
+<td align="left">0.001083</td>
+<td align="left">0.004259</td>
+<td align="left">14.3023</td>
+<td align="left">36.1156</td>
+<td align="left">7.1965</td>
+<td align="left">16</td>
+<td align="left">0.000788</td>
+<td align="left">4</td>
+<td align="left">0.000000</td>
+<td align="left">0.000000</td>
+</tr>
+<tr>
+<td>3392</td>
+<td align="left">10092</td>
+<td align="left">8</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">299.4282</td>
+<td align="left">0.028341</td>
+<td align="left">0.000860</td>
+<td align="left">7</td>
+<td align="left">0.000338</td>
+<td align="left">0.000169</td>
+<td align="left">0.004439</td>
+<td align="left">12.4028</td>
+<td align="left">39.5156</td>
+<td align="left">6.3979</td>
+<td align="left">19</td>
+<td align="left">0.001260</td>
+<td align="left">4</td>
+<td align="left">0.000000</td>
+<td align="left">0.000000</td>
+</tr>
+<tr>
+<td>3393</td>
+<td align="left">10094</td>
+<td align="left">8</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">375.8664</td>
+<td align="left">0.036436</td>
+<td align="left">0.000594</td>
+<td align="left">5</td>
+<td align="left">0.000204</td>
+<td align="left">0.000780</td>
+<td align="left">0.004346</td>
+<td align="left">11.6910</td>
+<td align="left">34.8547</td>
+<td align="left">7.9615</td>
+<td align="left">15</td>
+<td align="left">0.000613</td>
+<td align="left">6</td>
+<td align="left">0.000000</td>
+<td align="left">0.000631</td>
+</tr>
+<tr>
+<td>3394</td>
+<td align="left">10095</td>
+<td align="left">8</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">?</td>
+<td align="left">348.3576</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+<p>Terlihat bahwa ada tanda tanya (?) di dalam tabel tesebut. Itulah yang dinamakan Missing Value(Data Hilang)</p>
+<p>Sehingga kita perlu menggunakan K-Nearest Neighbor untuk menuntaskan masalah tersebut.</p>
+<h3 id="sumber-data-yang-saya-ambil">Sumber data yang saya ambil:</h3>
+<h3 id="httparchiveicsuciedumldatasetsskillcraft1mastertabledataset">http://archive.ics.uci.edu/ml/datasets/skillcraft1+master+table+dataset</h3></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js" defer></script>
+        <script src="../search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
